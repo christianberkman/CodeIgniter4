@@ -300,6 +300,36 @@ class Entity implements JsonSerializable
     }
 
     /**
+     * Return an array of changed attributes with their original and changed value
+    */
+    public function changedValues(): array
+    {
+        $changed = [];
+
+        // Add new attributes to changed array
+        foreach ($this->attributes as $key => $value) {
+            if (! array_key_exists($key, $this->original)) {
+                $changed[$key] = [
+                    'original' => null,
+                    'changed'  => $this->attributes[$key],
+                ];
+
+                continue;
+            }
+
+            // Add changed attributes to changed array
+            if ($this->original[$key] !== $this->attributes[$key]) {
+                $changed[$key] = [
+                    'original' => $this->original[$key],
+                    'changed'  => $this->attributes[$key],
+                ];
+            }
+        }
+
+        return $changed;
+    }
+
+    /**
      * Set raw data array without any mutations
      *
      * @return $this
